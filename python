@@ -1,0 +1,64 @@
+import cv2 as cv
+import numpy as np
+import pytesseract
+
+# save the video
+video_path = "" #ใส่คลิป .mp4
+cap = cv.VideoCapture(video_path)
+
+# Incase wanna use cam, instead of using video
+#cap = cv.VideoCapture(0)
+# Check if the camera is opened successfully
+#if not cap.isOpened():
+#    print("Failed to open camera")
+#    exit()
+
+
+# Load the pre-trained Haar Cascade classifier for car detection
+car_cascade = cv.CascadeClassifier(cv.data.haarcascades + "haarcascade_car.xml")
+
+# Function to process each frame and detect license plates
+def process_frame(frame):
+    # Convert the frame to grayscale
+    gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
+
+    # Detect cars in the frame
+    cars = car_cascade.detectMultiScale(gray, 1.1, 3)
+
+    # Process each detected car
+    for (x, y, w, h) in cars:
+        # Crop the region of interest containing the car
+        car_roi = frame[y:y+h, x:x+w]
+
+        # Convert the car ROI to grayscale
+        car_gray = cv.cvtColor(car_roi, cv.COLOR_BGR2GRAY)
+
+        # Apply thresholding or other preprocessing techniques if needed
+
+        # Perform license plate detection using pytesseract or other OCR libraries
+        license_plate = pytesseract.image_to_string(car_gray)
+
+        # Display the license plate on the original frame
+        cv.putText(frame, license_plate, (x, y-10),
+                    cv.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
+        cv.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
+
+    return frame
+
+# Process each frame in the video
+while cap.isOpened():
+    ret, frame = cap.read()
+
+    if not ret:
+        break
+
+    processed_frame = process_frame(frame)
+
+    # Display the processed frame
+    cv.imshow('License Plate Detection', processed_frame)
+    if cv.waitKey(1) == ord('q'):
+        break
+
+# Release the video capture and close all windows
+cap.release()
+cv.destroyAllWindows()
