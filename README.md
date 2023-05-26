@@ -5,6 +5,7 @@ KMITL Robotics Lab 3 Final Project
 - [Testrun.mp4] Demo video that can be used with the model (https://kmitlthailand-my.sharepoint.com/:v:/g/personal/64110092_kmitl_ac_th/EQ6txxjHYd9GrTv9N4hyB9sBdGJochQPHCjsafOiGl1TFA?e=gYAt6T)
 
 Introduction
+
 This project is about creating a model that can detect cars and motorcycle license plates from images and video footage.
 
 Task 1 – Data Acquisition
